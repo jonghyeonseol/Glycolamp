@@ -1,0 +1,199 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "glycolamp"
+version = "4.0.0"
+description = "Next-generation glycoproteomics analysis platform with SEQUEST-inspired scoring, ALCOA++ compliance, and machine learning integration"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Glycolamp Contributors"}
+]
+keywords = ["glycoproteomics", "proteomics", "mass-spectrometry", "SEQUEST", "ALCOA", "SMILES", "machine-learning"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+    "pandas>=1.5.0",
+    "numpy>=1.23.0",
+    "scikit-learn>=1.2.0",
+    "scipy>=1.10.0",
+    "matplotlib>=3.6.0",
+    "seaborn>=0.12.0",
+    "pyyaml>=6.0",
+    "adjustText>=0.8.0",
+    "statsmodels>=0.14.0",
+    "matplotlib-venn>=0.11.0",
+    "fastcluster>=1.2.0",
+    "plotly>=5.18.0",
+    "dash>=2.14.0",
+    "dash-bootstrap-components>=1.5.0",
+    "kaleido>=0.2.1",
+    # New dependencies for glycoproteomics pipeline
+    "pyteomics>=4.6.0",  # mzML parsing and MS/MS analysis
+    "biopython>=1.83",   # FASTA parsing
+    "rdkit>=2024.3.1",   # Chemoinformatics (SMILES generation)
+    "tqdm>=4.65.0",      # Progress bars for spectrum processing
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-timeout>=2.1.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "autoflake>=2.0.0",
+    "mypy>=1.0.0",
+    "pip-audit>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/Glycolamp"
+Repository = "https://github.com/yourusername/Glycolamp"
+Documentation = "https://github.com/yourusername/Glycolamp/blob/main/docs/GLYCOPROTEOMICS_PIPELINE_GUIDE.md"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+exclude = ["tests*", "docs*", "scripts*"]
+
+[tool.black]
+line-length = 120
+target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.git
+  | \.venv
+  | venv
+  | env
+  | build
+  | dist
+  | Results
+  | Dataset
+  | Citation
+  | docs
+)/
+'''
+
+[tool.flake8]
+max-line-length = 120
+ignore = ["W503"]
+per-file-ignores = [
+    # Allow E402 in files that need sys.path manipulation
+    "src/__init__.py:E402",
+    "src/visualization/*.py:E402",
+    "src/pipeline/*.py:E402",
+    "src/config/*.py:E402",
+    "src/analysis/*.py:E402",
+    # Ignore F821 (undefined names) in files with CSS or R code strings
+    "src/archived_modules/interactive_dashboard.py:F821",
+    "src/plots/vip_score_plot_r.py:F821",
+    "src/plots/vip_score_plot.py:F821",
+    # Ignore F841 (unused variables) in files where variables are for template generation
+    "src/archived_modules/interactive_dashboard.py:F841",
+    "src/archived_modules/publication_report.py:F841",
+    # Ignore E501 (line too long) in files with embedded code strings
+    "src/plots/vip_score_plot_r.py:E501",
+    "src/archived_modules/interactive_dashboard.py:E501",
+    # Ignore F401 (unused imports) in plot_config.py - bulk imports for re-export
+    "src/plots/plot_config.py:F401",
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "env",
+    "build",
+    "dist",
+    "*.egg-info",
+    ".pytest_cache",
+    "Results",
+    "Dataset",
+    "Citation",
+    "docs",
+]
+show-source = true
+count = true
+statistics = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "audit_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--tb=short",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false  # Gradual typing - start with false
+check_untyped_defs = true
+ignore_missing_imports = true
+exclude = [
+    "tests/",
+    "docs/",
+    "scripts/",
+    "archived_modules/",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "pandas.*",
+    "numpy.*",
+    "scipy.*",
+    "matplotlib.*",
+    "seaborn.*",
+    "sklearn.*",
+    "plotly.*",
+    "dash.*",
+]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/archived_modules/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+precision = 2
+show_missing = true
+skip_covered = false
