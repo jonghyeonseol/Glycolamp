@@ -55,6 +55,36 @@ Sp Scoring → XCorr Scoring → FDR Calculation → SMILES Generation → CSV O
 
 ## 🚀 Quick Start
 
+### Prerequisites
+
+Before running the pipeline, you need to convert Thermo `.raw` files to `.mzML` format.
+
+#### Converting .raw to .mzML (macOS)
+
+**Option 1: ThermoRawFileParser with Mono** (Recommended for Apple Silicon)
+
+```bash
+# 1. Install Mono
+brew install mono
+
+# 2. Download ThermoRawFileParser
+curl -L -o ThermoRawFileParser.zip https://github.com/compomics/ThermoRawFileParser/releases/download/v1.4.3/ThermoRawFileParser1.4.3.zip
+unzip ThermoRawFileParser.zip -d ThermoRawFileParser_bin
+
+# 3. Convert .raw to .mzML
+export MONO_GAC_PREFIX="/opt/homebrew"
+mono ThermoRawFileParser_bin/ThermoRawFileParser.exe \
+  -i /path/to/your/file.raw \
+  -o /output/directory \
+  -f 1  # 1 = mzML format
+```
+
+**Option 2: ProteoWizard MSConvert** (Windows/Linux only)
+- Download from: http://proteowizard.sourceforge.net/
+- Use GUI or command-line: `msconvert file.raw --mzML`
+
+**Note**: Docker-based solutions may not work on Apple Silicon Macs due to platform incompatibility.
+
 ### Installation
 
 ```bash
