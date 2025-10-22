@@ -251,7 +251,7 @@ If you use Glycolamp in your research, please cite:
 ```
 @software{glycolamp2025,
   title = {Glycolamp: Next-Generation Glycoproteomics Analysis Platform},
-  author = {Your Name},
+  author = {Jonghyeon Seol},
   year = {2025},
   version = {4.0.0},
   url = {https://github.com/yourusername/Glycolamp}
@@ -285,7 +285,7 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for de
 
 ## 📧 Contact
 
-- **Email**: your.email@example.com
+- **Email**: sjh3201@kbsi.re.kr
 - **Issues**: [GitHub Issues](https://github.com/yourusername/Glycolamp/issues)
 - **Documentation**: [Project Wiki](https://github.com/yourusername/Glycolamp/wiki)
 
