@@ -199,8 +199,8 @@ def benchmark_glycolamp(
     print("[1/8] Parsing mzML file...")
     start = time.time()
 
-    parser = MzMLParser(str(mzml_file))
-    spectra = parser.parse()
+    parser = MzMLParser()
+    spectra = parser.parse(str(mzml_file))
 
     if max_spectra:
         spectra = spectra[:max_spectra]
