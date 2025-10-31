@@ -22,12 +22,11 @@ Date: 2025-10-21
 Phase: 4 (Week 4)
 """
 
-from typing import Optional, Dict
 from dataclasses import dataclass
 
 try:
     from rdkit import Chem
-    from rdkit.Chem import AllChem, Descriptors
+    from rdkit.Chem import Descriptors
     RDKIT_AVAILABLE = True
 except ImportError:
     RDKIT_AVAILABLE = False

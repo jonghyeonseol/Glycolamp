@@ -18,12 +18,11 @@ Phase: 2 (Week 2)
 
 import re
 from pathlib import Path
-from typing import List, Dict, Optional, Iterator
+from typing import List, Dict, Optional
 from dataclasses import dataclass
 
 try:
     from Bio import SeqIO
-    from Bio.SeqUtils import molecular_weight
     BIOPYTHON_AVAILABLE = True
 except ImportError:
     BIOPYTHON_AVAILABLE = False

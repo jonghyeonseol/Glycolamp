@@ -25,7 +25,7 @@ Date: 2025-10-21
 Phase: 4 (Week 4)
 """
 
-from typing import Optional, Dict
+from typing import Dict
 from dataclasses import dataclass
 
 try:

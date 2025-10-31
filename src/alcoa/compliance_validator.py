@@ -6,7 +6,7 @@ Validates that pipeline outputs meet all 10 ALCOA++ principles before submission
 
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 
 class ComplianceValidator:

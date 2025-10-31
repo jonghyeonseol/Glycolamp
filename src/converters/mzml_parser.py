@@ -6,7 +6,7 @@ Implements LEGIBLE and AVAILABLE ALCOA++ principles.
 """
 
 from pathlib import Path
-from typing import List, Dict, Optional, Iterator
+from typing import List, Dict, Iterator
 import numpy as np
 
 try:

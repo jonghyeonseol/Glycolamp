@@ -20,11 +20,10 @@ Date: 2025-10-21
 Phase: 4 (Week 4)
 """
 
-from typing import Optional
 from dataclasses import dataclass
 
-from .peptide_smiles import PeptideSMILESConverter, PeptideSMILES
-from .glycan_smiles import GlycanSMILESConverter, GlycanSMILES
+from .peptide_smiles import PeptideSMILESConverter
+from .glycan_smiles import GlycanSMILESConverter
 
 
 @dataclass

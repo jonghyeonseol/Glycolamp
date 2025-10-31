@@ -17,8 +17,8 @@ Phase: 2 (Week 2)
 """
 
 import numpy as np
-from typing import List, Dict, Tuple, Optional
-from dataclasses import dataclass, field
+from typing import List, Dict, Tuple
+from dataclasses import dataclass
 
 from .fasta_parser import Peptide
 from .glycan_database import Glycan

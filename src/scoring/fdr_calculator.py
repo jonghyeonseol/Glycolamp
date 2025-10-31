@@ -25,7 +25,7 @@ Phase: 3 (Week 3)
 """
 
 import numpy as np
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Optional
 from dataclasses import dataclass
 from enum import Enum
 
