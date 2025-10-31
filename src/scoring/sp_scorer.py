@@ -103,7 +103,27 @@ class SpScorer:
         -------
         SpScore
             Preliminary score
+
+        Raises
+        ------
+        ValueError
+            If observed spectrum is invalid or empty
+        TypeError
+            If inputs are not of expected types
         """
+        # Input validation
+        if not isinstance(observed, ProcessedSpectrum):
+            raise TypeError(f"Expected ProcessedSpectrum, got {type(observed)}")
+
+        if not isinstance(theoretical, list):
+            raise TypeError(f"Expected list of TheoreticalPeak, got {type(theoretical)}")
+
+        if observed.binned_intensities is None or len(observed.binned_intensities) == 0:
+            raise ValueError("Observed spectrum has no binned intensities")
+
+        if observed.num_bins <= 0:
+            raise ValueError(f"Invalid number of bins: {observed.num_bins}")
+
         if len(theoretical) == 0:
             return SpScore(
                 score=0.0,
@@ -112,29 +132,39 @@ class SpScorer:
                 matched_intensity_fraction=0.0
             )
 
-        # Match peaks
-        matches, total_obs_intensity = self._match_peaks(observed, theoretical)
+        try:
+            # Match peaks
+            matches, total_obs_intensity = self._match_peaks(observed, theoretical)
+        except Exception as e:
+            raise RuntimeError(f"Failed to match peaks: {str(e)}") from e
 
         # Calculate score
-        if self.intensity_weight:
-            # Sum of matched intensities from observed spectrum
-            score = sum(intensity for _, intensity in matches)
-        else:
-            # Simple peak count
-            score = float(len(matches))
+        try:
+            if self.intensity_weight:
+                # Sum of matched intensities from observed spectrum
+                score = sum(intensity for _, intensity in matches)
+            else:
+                # Simple peak count
+                score = float(len(matches))
 
-        # Calculate matched intensity fraction
-        matched_intensity_fraction = 0.0
-        if total_obs_intensity > 0:
-            matched_intensity = sum(intensity for _, intensity in matches)
-            matched_intensity_fraction = matched_intensity / total_obs_intensity
+            # Calculate matched intensity fraction
+            matched_intensity_fraction = 0.0
+            if total_obs_intensity > 0:
+                matched_intensity = sum(intensity for _, intensity in matches)
+                matched_intensity_fraction = matched_intensity / total_obs_intensity
 
-        return SpScore(
-            score=score,
-            matched_peaks=len(matches),
-            total_theoretical_peaks=len(theoretical),
-            matched_intensity_fraction=matched_intensity_fraction
-        )
+            # Validate score is not negative
+            if score < 0:
+                raise ValueError(f"Calculated negative Sp score: {score}")
+
+            return SpScore(
+                score=score,
+                matched_peaks=len(matches),
+                total_theoretical_peaks=len(theoretical),
+                matched_intensity_fraction=matched_intensity_fraction
+            )
+        except (ZeroDivisionError, ValueError) as e:
+            raise RuntimeError(f"Failed to calculate Sp score: {str(e)}") from e
 
     def _match_peaks(
         self,

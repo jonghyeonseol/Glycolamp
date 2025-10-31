@@ -132,37 +132,82 @@ class SpectrumPreprocessor:
         -------
         ProcessedSpectrum
             Preprocessed spectrum with binned and normalized intensities
-        """
-        num_peaks_original = len(mz_array)
 
-        # Step 1: Remove precursor peak if specified
-        if precursor_mz is not None:
-            mz_array, intensity_array = self._remove_precursor(
-                mz_array, intensity_array, precursor_mz
+        Raises
+        ------
+        ValueError
+            If input arrays are invalid (empty, mismatched lengths, negative values)
+        TypeError
+            If inputs are not numpy arrays
+        RuntimeError
+            If preprocessing fails
+        """
+        # Input validation
+        if not isinstance(mz_array, np.ndarray):
+            raise TypeError(f"mz_array must be numpy array, got {type(mz_array)}")
+
+        if not isinstance(intensity_array, np.ndarray):
+            raise TypeError(f"intensity_array must be numpy array, got {type(intensity_array)}")
+
+        if len(mz_array) == 0:
+            raise ValueError("Empty m/z array provided")
+
+        if len(intensity_array) == 0:
+            raise ValueError("Empty intensity array provided")
+
+        if len(mz_array) != len(intensity_array):
+            raise ValueError(
+                f"Array length mismatch: mz_array ({len(mz_array)}) "
+                f"vs intensity_array ({len(intensity_array)})"
             )
 
-        # Step 2: Filter noise peaks
-        mz_array, intensity_array = self._filter_noise(mz_array, intensity_array)
-        num_peaks_retained = len(mz_array)
+        if np.any(mz_array < 0):
+            raise ValueError("Negative m/z values detected")
 
-        # Step 3: Square root transformation
-        intensity_array = self._sqrt_transform(intensity_array)
+        if np.any(intensity_array < 0):
+            raise ValueError("Negative intensity values detected")
 
-        # Step 4: Binning
-        binned = self._bin_spectrum(mz_array, intensity_array)
+        if precursor_mz is not None and precursor_mz < 0:
+            raise ValueError(f"Invalid precursor m/z: {precursor_mz}")
 
-        # Step 5: Regional normalization
-        binned = self._regional_normalization(binned)
+        num_peaks_original = len(mz_array)
 
-        return ProcessedSpectrum(
-            binned_intensities=binned,
-            bin_size=self.bin_size,
-            min_mz=self.min_mz,
-            max_mz=self.max_mz,
-            num_bins=self.num_bins,
-            num_peaks_original=num_peaks_original,
-            num_peaks_retained=num_peaks_retained
-        )
+        try:
+            # Step 1: Remove precursor peak if specified
+            if precursor_mz is not None:
+                mz_array, intensity_array = self._remove_precursor(
+                    mz_array, intensity_array, precursor_mz
+                )
+
+            # Step 2: Filter noise peaks
+            mz_array, intensity_array = self._filter_noise(mz_array, intensity_array)
+            num_peaks_retained = len(mz_array)
+
+            if num_peaks_retained == 0:
+                raise ValueError("All peaks were filtered out during noise removal")
+
+            # Step 3: Square root transformation
+            intensity_array = self._sqrt_transform(intensity_array)
+
+            # Step 4: Binning
+            binned = self._bin_spectrum(mz_array, intensity_array)
+
+            # Step 5: Regional normalization
+            binned = self._regional_normalization(binned)
+
+            return ProcessedSpectrum(
+                binned_intensities=binned,
+                bin_size=self.bin_size,
+                min_mz=self.min_mz,
+                max_mz=self.max_mz,
+                num_bins=self.num_bins,
+                num_peaks_original=num_peaks_original,
+                num_peaks_retained=num_peaks_retained
+            )
+        except (ValueError, TypeError) as e:
+            raise
+        except Exception as e:
+            raise RuntimeError(f"Spectrum preprocessing failed: {str(e)}") from e
 
     def _remove_precursor(
         self,

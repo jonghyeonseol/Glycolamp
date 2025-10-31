@@ -3,13 +3,53 @@ Unit Tests for Database Modules
 
 Tests FASTA parser, glycan database, and candidate generator modules.
 
+Test Coverage:
+--------------
+1. Glycan Database
+   - Composition parsing (H, N, F, A, S monosaccharides)
+   - Mass calculation accuracy
+   - Glycan type classification (HM, F, S, SF, C/H)
+   - Common glycan generation (63 structures)
+   - Database completeness validation
+
+2. FASTA Parser
+   - FASTA file parsing and protein extraction
+   - Enzymatic digestion (trypsin, chymotrypsin, etc.)
+   - N-glycosylation motif detection (N-X-S/T, X≠P)
+   - Peptide mass calculation
+   - Missed cleavage handling
+
+3. Candidate Generator
+   - Precursor mass calculation from m/z and charge
+   - PPM error calculation and mass tolerance
+   - Binary search mass matching (>30K candidates/sec)
+   - Glycopeptide candidate generation
+   - Candidate ranking and filtering
+
+Edge Cases Tested:
+------------------
+- Empty FASTA files and invalid sequences
+- Peptides without glycosylation sites
+- Zero or negative mass tolerances
+- Very large candidate pools (>10K)
+- Extreme precursor m/z values
+- Invalid monosaccharide compositions
+
 Usage:
+------
     pytest tests/test_database.py -v
     python tests/test_database.py  # Standalone mode
 
+Expected Results:
+-----------------
+    - All tests should pass (100% pass rate)
+    - 63 glycan structures successfully generated
+    - Binary search performance: >30K matches/second
+    - PPM errors within ±0.01 tolerance
+
 Author: Glycoproteomics Pipeline Team
 Date: 2025-10-21
-Phase: 2 (Week 2)
+Phase: 2 (Database)
 """
 
 import sys

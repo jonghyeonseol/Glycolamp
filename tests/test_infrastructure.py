@@ -4,12 +4,49 @@ Infrastructure Validation Test Suite
 Tests all Phase 1 modules to ensure they work correctly before proceeding
 to database and scoring implementation.
 
+Test Coverage:
+--------------
+1. AuditLogger (ALCOA++ Compliance)
+   - Initialization and configuration
+   - Event logging and timestamping
+   - File operation logging
+   - Audit trail persistence
+   - Summary statistics generation
+
+2. ChecksumManager (File Integrity)
+   - SHA-256 checksum calculation
+   - Checksum verification
+   - File integrity validation
+
+3. MetadataGenerator (Provenance Tracking)
+   - Complete metadata generation
+   - System information capture
+   - Timestamp and user tracking
+
+4. ComplianceValidator (ALCOA++ Validation)
+   - All 10 ALCOA++ principles
+   - Comprehensive compliance checking
+   - Validation report generation
+
+5. MzMLParser (File Format Conversion)
+   - mzML file parsing
+   - Spectrum extraction
+   - MS1/MS2 spectrum handling
+
 Usage:
+------
     pytest tests/test_infrastructure.py -v
     python tests/test_infrastructure.py  # Standalone mode
 
+Expected Results:
+-----------------
+    - All tests should pass (100% pass rate)
+    - ALCOA++ compliance score: 10/10
+    - No warnings or errors during execution
+
 Author: Glycoproteomics Pipeline Team
 Date: 2025-10-21
+Phase: 1 (Infrastructure)
 """
 
 import sys
